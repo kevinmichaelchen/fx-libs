@@ -1,4 +1,4 @@
-module github.com/kevinmichaelchen/fx-libs
+module github.com/kevinmichaelchen/fx-libs/logging
 
 go 1.19
 

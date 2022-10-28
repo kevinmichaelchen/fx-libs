@@ -4,6 +4,7 @@ use (
 	.
 	./client
 	./handler
+	./logging
 	./newrelic
 	./zerolog
 )
