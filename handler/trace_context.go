@@ -42,7 +42,7 @@ package handler
 //			Str(logcontext.KeyHostname, md.Hostname).
 //			Logger()
 //
-//		newCtx := logging.ToContext(c, sublogger)
+//		newCtx := zerolog.WithContext(c, sublogger)
 //		c.Request = c.Request.WithContext(newCtx)
 //		c.Next()
 //	}
