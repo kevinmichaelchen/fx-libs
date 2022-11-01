@@ -27,11 +27,6 @@ type Config struct {
 	*NestedConfig `env:",prefix=TS_LOG_"`
 }
 
-func (c Config) CanForward() bool {
-	// only forward logs when it's JSON
-	return c.Format == FormatJSON
-}
-
 type NestedConfig struct {
 	Level  string `env:"LEVEL,required"`
 	Format string `env:"FORMAT,required"`

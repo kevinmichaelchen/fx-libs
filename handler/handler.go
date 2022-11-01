@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog"
@@ -14,20 +15,25 @@ import (
 )
 
 type ModuleOptions struct {
-	InvokeFns []any
+	Invocations []any
+	Providers   []any
+}
+
+type UseNewRelicOutput struct {
+	UseNewRelic bool
 }
 
 func CreateModule(opts ModuleOptions) fx.Option {
 	return fx.Module("handler",
+		// Passing multiple Provide options appends to the application's
+		// collection of constructors.
+		fx.Provide(opts.Providers...),
 		fx.Provide(
-			func() *ModuleOptions {
-				return &opts
-			},
 			NewConfig,
 			NewGinEngine,
 		),
 		fx.Invoke(
-			opts.InvokeFns...,
+			opts.Invocations...,
 		),
 	)
 }
@@ -50,6 +56,8 @@ func NewGinEngine(
 	cfg *Config,
 	logger zerolog.Logger,
 	nrapp *newrelic.Application,
+	writer zerologWriter.ZerologWriter,
+	nro *UseNewRelicOutput,
 ) *gin.Engine {
 
 	// Create Gin router
@@ -59,7 +67,7 @@ func NewGinEngine(
 	r.Use(nrgin.Middleware(nrapp))
 
 	// Middleware to add the Trace ID to the logger
-	//r.Use(injectTraceContextLogger(logger, writer, newRelicCfg, zerologCfg))
+	r.Use(injectTraceContextLogger(logger, writer, nro.UseNewRelic))
 
 	//This should work, but its currently not
 	r.Use(

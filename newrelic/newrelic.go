@@ -56,10 +56,6 @@ type NestedConfig struct {
 	DecorateLogs bool `env:"DECORATE_LOGS,default=false"`
 }
 
-func (c Config) ShouldForwardLogs() bool {
-	return c.Enabled && c.ForwardLogs
-}
-
 func NewConfig() (*Config, error) {
 	var cfg Config
 	err := envconfig.Process(context.Background(), &cfg)
