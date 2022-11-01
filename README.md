@@ -9,9 +9,15 @@ go get -v go.uber.org/fx
 # Install only the modules you wish to use
 go get -v \
   github.com/kevinmichaelchen/fx-libs/client \
+  github.com/kevinmichaelchen/fx-libs/gqlgen \
   github.com/kevinmichaelchen/fx-libs/handler \
   github.com/kevinmichaelchen/fx-libs/newrelic \
   github.com/kevinmichaelchen/fx-libs/zerolog
+```
+
+### Updating dependencies
+```shell
+go list all | grep github.com/kevinmichaelchen/fx-libs | xargs go get -v
 ```
 
 ## Usage
