@@ -24,19 +24,19 @@ go get -v go.uber.org/fx
 
 # Install only the modules you wish to use
 go get -v \
-  bitbucket.org/tskevinchen/fx-libs/client \
-  bitbucket.org/tskevinchen/fx-libs/genqlient \
-  bitbucket.org/tskevinchen/fx-libs/gin \
-  bitbucket.org/tskevinchen/fx-libs/ginnewrelic \
-  bitbucket.org/tskevinchen/fx-libs/ginnewreliczerolog \
-  bitbucket.org/tskevinchen/fx-libs/gqlgen \
-  bitbucket.org/tskevinchen/fx-libs/newrelic \
-  bitbucket.org/tskevinchen/fx-libs/zerolog
+  github.com/kevinmichaelchen/fx-libs/client \
+  github.com/kevinmichaelchen/fx-libs/genqlient \
+  github.com/kevinmichaelchen/fx-libs/gin \
+  github.com/kevinmichaelchen/fx-libs/ginnewrelic \
+  github.com/kevinmichaelchen/fx-libs/ginnewreliczerolog \
+  github.com/kevinmichaelchen/fx-libs/gqlgen \
+  github.com/kevinmichaelchen/fx-libs/newrelic \
+  github.com/kevinmichaelchen/fx-libs/zerolog
 ```
 
 ### Updating dependencies
 ```shell
-go list all | grep bitbucket.org/tskevinchen/fx-libs | xargs go get -v
+go list all | grep github.com/kevinmichaelchen/fx-libs | xargs go get -v
 ```
 
 ## Usage
@@ -47,13 +47,13 @@ In `main.go`:
 package main
 
 import (
-	"bitbucket.org/tskevinchen/fx-libs/client"
-	"bitbucket.org/tskevinchen/fx-libs/genqlient"
-	"bitbucket.org/tskevinchen/fx-libs/gin"
-	"bitbucket.org/tskevinchen/fx-libs/ginnewrelic"
-	"bitbucket.org/tskevinchen/fx-libs/ginnewreliczerolog"
-	"bitbucket.org/tskevinchen/fx-libs/newrelic"
-	"bitbucket.org/tskevinchen/fx-libs/zerolog"
+	"github.com/kevinmichaelchen/fx-libs/client"
+	"github.com/kevinmichaelchen/fx-libs/genqlient"
+	"github.com/kevinmichaelchen/fx-libs/gin"
+	"github.com/kevinmichaelchen/fx-libs/ginnewrelic"
+	"github.com/kevinmichaelchen/fx-libs/ginnewreliczerolog"
+	"github.com/kevinmichaelchen/fx-libs/newrelic"
+	"github.com/kevinmichaelchen/fx-libs/zerolog"
 	"go.uber.org/fx"
 )
 
