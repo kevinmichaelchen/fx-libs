@@ -1,18 +1,41 @@
-package handler
+package ginnewreliczerolog
 
 import (
 	"github.com/gin-gonic/gin"
+	pkgNewRelic "github.com/kevinmichaelchen/fx-libs/newrelic"
+	pkgZerolog "github.com/kevinmichaelchen/fx-libs/zerolog"
 	"github.com/newrelic/go-agent/v3/integrations/logcontext"
 	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/rs/zerolog"
+	"go.uber.org/fx"
 )
 
-func injectTraceContextLogger(
-	logger zerolog.Logger,
-	writer zerologWriter.ZerologWriter,
-	useNewRelic bool,
+var Module = fx.Module("ginnewreliczerolog",
+	fx.Provide(
+		fx.Annotate(
+			NewGinHandler,
+			fx.ResultTags(`name:"gin_newrelic_zerolog_handler"`),
+		),
+	),
+)
+
+// TODO one bad thing about this being an optional provider over in gin.go
+//
+//		is that if any params cannot be loaded in (e.g., if we load Config instead
+//		of a point to Config),
+//		then this provider will silently fail and clients won't immediately know why
+//		they're missing "Logs in Context".........
+//	 This is why TESTING IS IMPORTANT
+func NewGinHandler(
+	logger *zerolog.Logger,
+	zlw *zerologWriter.ZerologWriter,
+	zCfg *pkgZerolog.Config,
+	nrCfg *pkgNewRelic.Config,
 ) gin.HandlerFunc {
+
+	useNewRelic := zCfg.Format == pkgZerolog.FormatJSON &&
+		nrCfg.Enabled && nrCfg.ForwardLogs
 
 	return func(c *gin.Context) {
 		// Get the New Relic Transaction from the Gin context
@@ -25,10 +48,11 @@ func injectTraceContextLogger(
 		// the logger for other threads that may be logging external to this
 		// transaction.
 		if useNewRelic {
-			newLogger = logger.Output(writer.WithTransaction(txn))
+			newLogger = logger.Output(zlw.WithTransaction(txn))
 		} else {
 			// TODO I THINK this is a safe way of cloning
-			newLogger = *(&logger)
+			// could also try newLogger = logger.Output(os.Stderr)
+			newLogger = *logger
 		}
 
 		md := txn.GetLinkingMetadata()

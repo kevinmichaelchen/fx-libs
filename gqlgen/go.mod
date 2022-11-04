@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.20
-	github.com/newrelic/go-agent/v3 v3.19.2
+	github.com/newrelic/go-agent/v3 v3.20.0
 )
 
 require (

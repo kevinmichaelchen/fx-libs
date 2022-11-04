@@ -1,33 +1,22 @@
-package handler
+package gin
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter"
-	"github.com/newrelic/go-agent/v3/integrations/nrgin"
-	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/rs/zerolog"
 	"github.com/sethvargo/go-envconfig"
 	"go.uber.org/fx"
+	"log"
 	"net/http"
 )
 
 type ModuleOptions struct {
 	Invocations []any
-	Providers   []any
-}
-
-type UseNewRelicOutput struct {
-	UseNewRelic bool
 }
 
 func CreateModule(opts ModuleOptions) fx.Option {
-	return fx.Module("handler",
-		// Passing multiple Provide options appends to the application's
-		// collection of constructors.
-		fx.Provide(opts.Providers...),
+	return fx.Module("gin",
 		fx.Provide(
 			NewConfig,
 			NewGinEngine,
@@ -51,44 +40,62 @@ func NewConfig() (*Config, error) {
 	return &cfg, nil
 }
 
-func NewGinEngine(
-	lc fx.Lifecycle,
-	cfg *Config,
-	logger zerolog.Logger,
-	nrapp *newrelic.Application,
-	writer zerologWriter.ZerologWriter,
-	nro *UseNewRelicOutput,
-) *gin.Engine {
+type NewGinEngineInput struct {
+	fx.In
 
+	LC fx.Lifecycle
+
+	Cfg *Config
+
+	// NewRelicHandler is a Gin HandlerFunc (middleware) which instruments the
+	// entire Gin handler with New Relic traces.
+	NewRelicHandler gin.HandlerFunc `name:"ginnewrelic" optional:"true"`
+
+	// NewRelicZerologHandler is a Gin HandlerFunc (middleware) which injects a
+	// trace-aware Zerolog logger into the request context that will collect log
+	// metrics, forward logs, and enrich logs depending on how your New Relic
+	// application is configured.
+	NewRelicZerologHandler gin.HandlerFunc `name:"gin_newrelic_zerolog_handler" optional:"true"`
+}
+
+func NewGinEngine(in NewGinEngineInput) *gin.Engine {
 	// Create Gin router
 	r := gin.New()
 
 	// Instrument requests with New Relic telemetry
-	r.Use(nrgin.Middleware(nrapp))
+	if in.NewRelicHandler != nil {
+		r.Use(in.NewRelicHandler)
+	}
 
 	// Middleware to add the Trace ID to the logger
-	r.Use(injectTraceContextLogger(logger, writer, nro.UseNewRelic))
+	if in.NewRelicZerologHandler != nil {
+		r.Use(in.NewRelicZerologHandler)
+	}
 
-	//This should work, but its currently not
+	// TODO let consumers configure this
+	// Don't log the /health endpoint since k8s probes will constantly be
+	// hitting it
 	r.Use(
 		gin.LoggerWithConfig(gin.LoggerConfig{
 			SkipPaths: []string{"/health"},
 		}),
 	)
-	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+
+	// Recovery middleware recovers from any panics and writes a 500 if there
+	// was one.
 	r.Use(gin.Recovery())
 
-	lc.Append(fx.Hook{
+	in.LC.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			addr := fmt.Sprintf(":%d", cfg.Port)
+			addr := fmt.Sprintf(":%d", in.Cfg.Port)
 			// In production, we'd want to separate the Listen and Serve phases for
 			// better error-handling.
 			go func() {
-				logger.Info().Str("addr", addr).Msg("Serving GraphQL")
+				log.Printf("Serving GraphQL on %s\n", addr)
 
 				err := r.Run(addr)
 				if err != nil && !errors.Is(err, http.ErrServerClosed) {
-					logger.Fatal().Err(err).Msg("server failed")
+					log.Fatalf("server failed: %v", err)
 				}
 			}()
 			return nil

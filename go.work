@@ -1,10 +1,13 @@
 go 1.19
 
 use (
-	.
 	./client
+	./example
+	./genqlient
+	./gin
+	./ginnewrelic
+	./ginnewreliczerolog
 	./gqlgen
-	./handler
 	./newrelic
 	./zerolog
 )
