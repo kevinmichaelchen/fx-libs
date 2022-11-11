@@ -81,6 +81,15 @@ func main() {
 
 ## Contributing
 
+### Releasing new versions
+Run the `tag` script by specifying the new version:
+```shell
+TAG=v0.0.1 ./tag.sh
+```
+
+This will generate a Git tag for the repository root, as well as for all descendant submodules.
+
+### `go work sync`
 Because this project uses a Go 1.18 Workspace, when working here, you almost
 never want to use `go mod`, as it's unable to reason about cross-module
 dependencies.
