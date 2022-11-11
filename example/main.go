@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/kevinmichaelchen/fx-libs/fx/gin"
-	"github.com/kevinmichaelchen/fx-libs/fx/recipes/standard"
 	"errors"
 	"fmt"
 	gg "github.com/gin-gonic/gin"
 	"github.com/ipfans/fxlogger"
+	"github.com/kevinmichaelchen/fx-libs/fx/gin"
+	"github.com/kevinmichaelchen/fx-libs/fx/recipes/standard"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	zl "github.com/rs/zerolog"
 	"go.uber.org/fx"

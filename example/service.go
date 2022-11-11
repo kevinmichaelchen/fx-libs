@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kevinmichaelchen/fx-libs/fx/http/client/newrelic"
 	"context"
+	"github.com/kevinmichaelchen/fx-libs/fx/http/client/newrelic"
 	zl "github.com/rs/zerolog"
 	"io"
 	"net/http"

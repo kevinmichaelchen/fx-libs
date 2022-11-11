@@ -1,9 +1,9 @@
 package zerolog
 
 import (
+	"github.com/gin-gonic/gin"
 	pkgNewRelic "github.com/kevinmichaelchen/fx-libs/fx/newrelic"
 	pkgZerolog "github.com/kevinmichaelchen/fx-libs/fx/zerolog"
-	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/logcontext"
 	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
