@@ -1,11 +1,12 @@
-module github.com/kevinmichaelchen/fx-libs/example
+module github.com/kevinmichaelchen/fx-libs/fx/gin/newrelic/zerolog
 
 go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.1
-	github.com/ipfans/fxlogger v0.2.0
 	github.com/newrelic/go-agent/v3 v3.20.0
+	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter v1.0.2
+	github.com/newrelic/go-agent/v3/integrations/nrgin v1.1.3
 	github.com/rs/zerolog v1.28.0
 	go.uber.org/fx v1.18.2
 )
@@ -25,6 +26,7 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrwriter v1.0.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
