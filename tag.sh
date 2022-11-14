@@ -6,11 +6,9 @@ set -e
 brew list -q gum || brew install gum
 
 # Choose MAJOR, MINOR, or PATCH
-TYPE=$(gum choose "major" "minor" "patch")
+TYPE=$(gum choose "patch" "minor" "major")
 
 function get_new_tag {
-  echo "woohoo $1"
-
   # Download SemVer script
   brew list -q semver || brew install ffurrer2/tap/semver
 
