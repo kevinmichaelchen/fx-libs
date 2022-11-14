@@ -82,12 +82,17 @@ func main() {
 ## Contributing
 
 ### Releasing new versions
-Run the `tag` script by specifying the new version:
+Run the `tag` script
 ```shell
-TAG=v0.0.1 ./tag.sh
+./tag.sh
 ```
+which will prompt you to pick a [SemVer](https://semver.org/) change type:
+* major
+* minor
+* patch
 
-This will generate a Git tag for the repository root, as well as for all descendant submodules.
+It will generate a Git tag for the repository root, as well as for all
+descendant submodules.
 
 ### `go work sync`
 Because this project uses a Go 1.18 Workspace, when working here, you almost
