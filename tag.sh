@@ -16,16 +16,17 @@ get_new_tag() {
   brew list -q semver || brew install ffurrer2/tap/semver
 
   LATEST_TAG=$(git tag | sort -V | grep -E '^v\d' | head -n1)
+  test -n "$LATEST_TAG" || LATEST_TAG="v0.0.0"
   echo "Most recent tag is: ${LATEST_TAG}"
   # shellcheck disable=SC2016
   # shellcheck disable=SC2039
   LATEST_TAG_WITH_NO_LEADING_V=$(sd '^[v]?(.*)+' '$1' <<< "$LATEST_TAG")
 
-  if [ $1 = "major" ]; then
+  if [ "$1" = "major" ]; then
     NEW_TAG_WITH_NO_LEADING_V=$(semver next major "${LATEST_TAG_WITH_NO_LEADING_V}")
-  elif [ $1 = "minor" ]; then
+  elif [ "$1" = "minor" ]; then
     NEW_TAG_WITH_NO_LEADING_V=$(semver next minor "${LATEST_TAG_WITH_NO_LEADING_V}")
-  elif [ $1 = "patch" ]; then
+  elif [ "$1" = "patch" ]; then
     NEW_TAG_WITH_NO_LEADING_V=$(semver next patch "${LATEST_TAG_WITH_NO_LEADING_V}")
   else
     echo "Illegal SemVer bump type. Should be major|minor|patch"
