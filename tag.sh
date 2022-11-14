@@ -2,14 +2,17 @@
 
 set -e
 
-# Download Gum
+# Download sd: https://github.com/chmln/sd
+brew list -q sd || brew install sd
+
+# Download Gum: https://github.com/charmbracelet/gum
 brew list -q gum || brew install gum
 
 # Choose MAJOR, MINOR, or PATCH
 TYPE=$(gum choose "patch" "minor" "major")
 
 get_new_tag() {
-  # Download SemVer script
+  # Download SemVer script: https://github.com/ffurrer2/semver
   brew list -q semver || brew install ffurrer2/tap/semver
 
   LATEST_TAG=$(git tag | sort -V | grep -E '^v\d' | head -n1)
